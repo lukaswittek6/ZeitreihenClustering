@@ -91,7 +91,7 @@ if uploaded_file:
 
     abweichungen = []
     for idx, label in enumerate(labels):
-        dist = np.linalg.norm(X_scaled[idx] - kshape.cluster_centers_[label])
+        dist = np.sqrt(np.mean((X_scaled[idx] - kshape.cluster_centers_[label]) ** 2))
         abweichungen.append((df.index[idx], label, dist))
 
     ausreisser = [(name, label, round(dist, 2)) 
