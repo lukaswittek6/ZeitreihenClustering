@@ -64,7 +64,7 @@ if uploaded_file:
     zeitachsen = [f"Woche {i+1}" for i in range(X_scaled.shape[1])]
 
     for cluster_id in np.unique(labels):
-        fig, ax = plt.subplots(figsize=(10, 4))
+        fig, ax = plt.subplots(figsize=(8, 3))
         cluster_indices = np.where(labels == cluster_id)[0]
         cluster_data = X_scaled[cluster_indices]
         for serie in cluster_data:
