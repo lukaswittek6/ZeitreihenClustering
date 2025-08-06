@@ -8,7 +8,7 @@ from tslearn.clustering import KShape
 
 st.set_page_config(page_title="Zeitreihen-Clustering", layout="centered")
 
-st.title("🧠 Zeitreihen-Clustering mit k-Shape & Plausibilitätsprüfung")
+st.title("Zeitreihen-Clustering für RELEX")
 st.markdown("Lade deine Excel-Datei mit Marktzeitreihen hoch, führe Clustering durch und prüfe automatisch auf unplausible Verläufe.")
 
 # Clusterwahl
@@ -78,8 +78,8 @@ if uploaded_file:
         ax.grid(True)
         st.pyplot(fig)
 
-    # 📌 Abschnitt: Delta-Slider zur Plausibilitätsprüfung
-    st.subheader("🔎 Plausibilitätsprüfung per Abweichung")
+    #  Abschnitt: Delta-Slider zur Plausibilitätsprüfung
+    st.subheader("Plausibilitätsprüfung per RSME Abweichungsanalyse")
 
     delta_schwelle = st.slider(
         "Wähle den Schwellenwert für die Abweichung Δ",
@@ -97,11 +97,11 @@ if uploaded_file:
     ausreisser = [(name, label, round(dist, 2)) 
                   for name, label, dist in abweichungen if dist > delta_schwelle]
 
-    st.markdown(f"**🚨 {len(ausreisser)} Märkte überschreiten Δ > {delta_schwelle}**")
+    st.markdown(f"** {len(ausreisser)} Märkte überschreiten Δ > {delta_schwelle}**")
     if ausreisser:
         st.table(pd.DataFrame(ausreisser, columns=["Markt", "Cluster", "Abweichung"]))
     else:
-        st.success("✅ Alle Märkte liegen innerhalb der akzeptierten Abweichung.")
+        st.success("Alle Märkte liegen innerhalb der akzeptierten Abweichung.")
 
     df["Plausible_Cluster"] = [
         -1 if dist > delta_schwelle else cluster
@@ -110,4 +110,4 @@ if uploaded_file:
 
     # Download-Link
     csv = df.reset_index()[["Markt", "Cluster", "Plausible_Cluster"]].to_csv(index=False).encode("utf-8")
-    st.download_button("📥 Cluster-Zuordnung als CSV herunterladen", csv, "Cluster_Zuordnung.csv", "text/csv")
+    st.download_button("Cluster-Zuordnung als CSV herunterladen", csv, "Cluster_Zuordnung.csv", "text/csv")
