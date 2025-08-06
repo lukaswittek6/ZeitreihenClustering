@@ -6,7 +6,7 @@ from io import BytesIO
 from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from tslearn.clustering import KShape
 
-st.set_page_config(page_title="Zeitreihen-Clustering", layout="wide")
+st.set_page_config(page_title="Zeitreihen-Clustering", layout="centered")
 
 st.title("🧠 Zeitreihen-Clustering mit k-Shape & Plausibilitätsprüfung")
 st.markdown("Lade deine Excel-Datei mit Marktzeitreihen hoch, führe Clustering durch und prüfe automatisch auf unplausible Verläufe.")
