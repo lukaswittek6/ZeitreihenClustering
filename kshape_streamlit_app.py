@@ -72,7 +72,7 @@ if uploaded_file:
     st.dataframe(df[['Cluster']])
 
     # Plot: Mittelwert je Cluster
-    zeitachsen = [f"Woche {i+1}" for i in range(X_scaled.shape[1])]
+    zeitachsen = [f"{i+1}" for i in range(X_scaled.shape[1])]
     for cluster_id in np.unique(labels):
         fig, ax = plt.subplots(figsize=(10, 4))
         cluster_indices = np.where(labels == cluster_id)[0]
