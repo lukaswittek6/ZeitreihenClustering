@@ -9,7 +9,7 @@ from tslearn.clustering import KShape
 
 # Streamlit UI
 st.title("Zeitreihen-Clustering mit k-Shape")
-st.markdown("Lade deine Excel-Datei mit Zeitreihen hoch (Marktspalte + Wochen), wähle die Clusteranzahl – automatisch oder manuell – und sieh dir das Ergebnis an.")
+st.markdown("Lade die Excel-Datei mit Zeitreihen hoch (Marktspalte + Wochen) und wähle eine automatische oder manuelle Ausgabe der Clusteranzahl aus.")
 
 # Clusterwahl
 cluster_option = st.radio("Clusteranzahl bestimmen:", ["Automatisch (Elbow)", "Manuell wählen"])
