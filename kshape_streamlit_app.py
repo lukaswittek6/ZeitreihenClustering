@@ -8,7 +8,7 @@ from tslearn.preprocessing import TimeSeriesScalerMeanVariance
 from tslearn.clustering import KShape
 
 # Streamlit UI
-st.title("🧠 Zeitreihen-Clustering mit k-Shape")
+st.title("Zeitreihen-Clustering mit k-Shape")
 st.markdown("Lade deine Excel-Datei mit Zeitreihen hoch (Marktspalte + Wochen), wähle die Clusteranzahl – automatisch oder manuell – und sieh dir das Ergebnis an.")
 
 # Clusterwahl
