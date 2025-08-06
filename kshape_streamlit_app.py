@@ -61,7 +61,7 @@ if uploaded_file:
     labels = kshape.fit_predict(X_scaled)
     df['Cluster'] = labels
 
-    zeitachsen = [f"Woche {i+1}" for i in range(X_scaled.shape[1])]
+    zeitachsen = [f"{i+1}" for i in range(X_scaled.shape[1])]
 
     for cluster_id in np.unique(labels):
         fig, ax = plt.subplots(figsize=(8, 3))
