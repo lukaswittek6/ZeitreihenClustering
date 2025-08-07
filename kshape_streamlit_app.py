@@ -8,8 +8,8 @@ from tslearn.clustering import KShape
 
 st.set_page_config(page_title="Zeitreihen-Clustering", layout="centered")
 
-st.title("Zeitreihen-Clustering für RELEX")
-st.markdown("Lade deine Excel-Datei mit Marktzeitreihen hoch, führe Clustering durch und prüfe automatisch auf unplausible Verläufe.")
+st.title("Trendclustering für RELEX")
+st.markdown("Test XY XY")
 
 # Clusterwahl
 cluster_option = st.radio("Clusteranzahl bestimmen:", ["Automatisch (Elbow)", "Manuell wählen"])
