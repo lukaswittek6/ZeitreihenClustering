@@ -2,14 +2,14 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
 from io import BytesIO
+from tslearn.preprocessing import TimeSeriesScalerMeanVariance
+from tslearn.clustering import KShape
 
-st.set_page_config(page_title="Zeitreihen-Clustering (K-Means)", layout="centered")
+st.set_page_config(page_title="Zeitreihen-Clustering", layout="centered")
 
-st.title("Zeitreihen-Clustering mit synchronem K-Means & Plausibilitätsprüfung")
-st.markdown("Lade deine Excel-Datei mit Marktzeitreihen hoch, führe Clustering durch und prüfe automatisch auf unplausible Verläufe.")
+st.title("Clustering für RELEX")
+st.markdown("Testversion.")
 
 # Clusterwahl
 cluster_option = st.radio("Clusteranzahl bestimmen:", ["Automatisch (Elbow)", "Manuell wählen"])
@@ -31,17 +31,16 @@ if uploaded_file:
     st.success(f"{len(df)} Märkte erfolgreich geladen.")
 
     X = df.values
-    scaler = StandardScaler()
+    scaler = TimeSeriesScalerMeanVariance()
     X_scaled = scaler.fit_transform(X)
 
-    # Elbow oder manuell
     if user_defined_k is None:
         inertia = []
         K_range = range(2, 10)
         for k in K_range:
-            km = KMeans(n_clusters=k, random_state=42, n_init="auto")
-            km.fit(X_scaled)
-            inertia.append(km.inertia_)
+            ks = KShape(n_clusters=k, random_state=42)
+            ks.fit(X_scaled)
+            inertia.append(ks.inertia_)
 
         diffs = np.diff(inertia)
         best_k_index = np.argmax(-diffs) + 1
@@ -58,30 +57,29 @@ if uploaded_file:
         optimal_k = user_defined_k
         st.success(f"Manuell gewählte Clusteranzahl: {optimal_k}")
 
-    # Clustering
-    kmeans = KMeans(n_clusters=optimal_k, random_state=42, n_init="auto")
-    labels = kmeans.fit_predict(X_scaled)
-    df["Cluster"] = labels
+    kshape = KShape(n_clusters=optimal_k, random_state=42)
+    labels = kshape.fit_predict(X_scaled)
+    df['Cluster'] = labels
 
     zeitachsen = [f"{i+1}" for i in range(X_scaled.shape[1])]
 
-    # Visualisierung
     for cluster_id in np.unique(labels):
         fig, ax = plt.subplots(figsize=(10, 4))
-        cluster_data = X_scaled[labels == cluster_id]
+        cluster_indices = np.where(labels == cluster_id)[0]
+        cluster_data = X_scaled[cluster_indices]
         for serie in cluster_data:
             ax.plot(zeitachsen, serie.flatten(), alpha=0.2)
         mean_curve = cluster_data.mean(axis=0).flatten()
         ax.plot(zeitachsen, mean_curve, color="black", linewidth=2, label="Cluster-Mittel")
         ax.set_title(f"Cluster {cluster_id}")
         ax.set_xlabel("Kalenderwoche")
-        ax.set_ylabel("Standardisierter Absatz")
+        ax.set_ylabel("Z-transformierter Absatz")
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
 
-    # 📌 Plausibilitätsprüfung
-    st.subheader("🔎 Plausibilitätsprüfung per Abweichung")
+    # 📌 Abschnitt: Delta-Slider zur Plausibilitätsprüfung
+    st.subheader("Plausibilitätsprüfung per Abweichung")
 
     delta_schwelle = st.slider(
         "Wähle den Schwellenwert für die Abweichung Δ",
@@ -93,7 +91,7 @@ if uploaded_file:
 
     abweichungen = []
     for idx, label in enumerate(labels):
-        dist = np.linalg.norm(X_scaled[idx] - kmeans.cluster_centers_[label])
+        dist = np.sqrt(np.mean((X_scaled[idx] - kshape.cluster_centers_[label]) ** 2))
         abweichungen.append((df.index[idx], label, dist))
 
     ausreisser = [(name, label, round(dist, 2)) 
@@ -109,9 +107,9 @@ if uploaded_file:
         -1 if dist > delta_schwelle else cluster
         for (_, cluster, dist) in abweichungen
     ]
-    
+
     # 📈 Verlauf pro Cluster (Originalskala)
-    st.subheader("📊 Verlauf pro Cluster (Mittelwert & Einzelverläufe auf Originaldaten)")
+    st.subheader("Verlauf pro Cluster (Mittelwert & Einzelverläufe auf Originaldaten)")
     
     zeitspalten = df.columns[:-2]  # alle außer Cluster & Plausible_Cluster
     
