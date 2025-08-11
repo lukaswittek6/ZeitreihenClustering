@@ -32,10 +32,10 @@ if uploaded_file:
 
     # ===== Slider für 20%-Regel =====
     min_data_ratio = st.slider(
-        "Mindestanteil an echten Daten (für Sondercluster)",
+        "Mindestanteil an echten Daten zur Datenbereinigung",
         min_value=0.0,
         max_value=1.0,
-        value=0.20,
+        value=0.40,
         step=0.05
     )
 
