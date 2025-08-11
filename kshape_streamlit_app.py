@@ -105,36 +105,6 @@ if uploaded_file:
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
-    """
-    # ===== Plausibilitätsprüfung =====
-    st.subheader("Plausibilitätsprüfung per Abweichung")
-    delta_schwelle = st.slider(
-        "Wähle den Schwellenwert für die Abweichung Δ",
-        min_value=1.0,
-        max_value=3.0,
-        value=2.0,
-        step=0.1
-    )
-
-    abweichungen = []
-    for idx in df_cluster.index:
-        label = df_result.loc[idx, "Cluster"]
-        dist = np.sqrt(np.mean((scaler.transform(df_interp.loc[[idx]])[0] - kshape.cluster_centers_[label]) ** 2))
-        abweichungen.append((idx, label, dist))
-
-    ausreisser = [(name, label, round(dist, 2)) for name, label, dist in abweichungen if dist > delta_schwelle]
-
-    st.markdown(f"**{len(ausreisser)} Märkte überschreiten Δ > {delta_schwelle}**")
-    if ausreisser:
-        st.table(pd.DataFrame(ausreisser, columns=["Markt", "Cluster", "Abweichung"]))
-    else:
-        st.success("Alle Märkte liegen innerhalb der akzeptierten Abweichung.")
-
-    df_result["Plausible_Cluster"] = [
-        -1 if dist > delta_schwelle else cluster
-        for (_, cluster, dist) in abweichungen
-    ]
-    """
     
     # Sondercluster bekommt automatisch plausible = "Sondercluster"
     df_result.loc[sonder_idx, "Plausible_Cluster"] = "Sondercluster"
