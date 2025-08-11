@@ -105,7 +105,7 @@ if uploaded_file:
         ax.legend()
         ax.grid(True)
         st.pyplot(fig)
-
+    """
     # ===== Plausibilitätsprüfung =====
     st.subheader("Plausibilitätsprüfung per Abweichung")
     delta_schwelle = st.slider(
@@ -134,6 +134,8 @@ if uploaded_file:
         -1 if dist > delta_schwelle else cluster
         for (_, cluster, dist) in abweichungen
     ]
+    """
+    
     # Sondercluster bekommt automatisch plausible = "Sondercluster"
     df_result.loc[sonder_idx, "Plausible_Cluster"] = "Sondercluster"
 
